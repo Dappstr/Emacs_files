@@ -2,16 +2,33 @@
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
+
+;;(setq-default indent-tabs-mode t)
+;;(setq-default tab-width 1) ; Assuming you want your tabs to be four spaces wide
+;;(defvaralias 'c-basic-offset 'tab-width)
+
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (setq doom-theme 'lensor)
 (setq doom-font (font-spec :family "Fira Code" :size 14))
 
-(setq lsp-clients-clangd-executable "usr/bin/clangd")
+(define-key global-map (kbd "TAB") 'insert-tab)
+
+(defun insert-tab ()
+    (interactive)
+      (insert "    "))  ;; or (insert "\t") for a real tab
+
+(setq lsp-clients-clangd-executable "/usr/bin/clangd")
 
 (add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c-mode-hook (lambda () (call-interactively #'eglot)))
+
 (add-hook 'c++-mode-hook 'eglot-ensure)
-(add-hook 'rust-mode-hook 'eglot-ensure) ;; changed dd-hook to add-hook
-;;(add-hook 'd-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook (lambda () (call-interactively #'eglot)))
+
+(add-hook 'rust-mode-hook 'eglot-ensure) ;; changed dd-hook to add-hoo
+(add-hook 'rust-mode-hook (lambda () (call-interactively #'eglot)))
+
+(add-hook 'd-mode-hook 'eglot-ensure)
 (add-hook 'd-mode-hook (lambda () (call-interactively #'eglot)))
 
 (after! eglot  
@@ -47,8 +64,8 @@
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
-(setq user-full-name "John Doe"
-      user-mail-address "john@doe.com")
+;;(setq user-full-name "John Doe"
+;;      user-mail-address "john@doe.com")
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom:
 ;;
