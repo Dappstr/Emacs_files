@@ -53,12 +53,12 @@
 ;; '(tree-sitter-hl-face:operator ((t (:foreground "#0aff8d" :inherit nil)))))
 
 (custom-set-faces
-  ;; custom-set-faces was added by Custom.
-  ;; If you edit it by hand, you could mess it up, so be careful.
-  ;; Your init file should contain only one such instance.
-  ;; If there is more than one, they won't work right. 
-  '(tree-sitter-hl-face:operator ((t (:foreground "#0aff8d" :inherit nil))))
-  '(tree-sitter-hl-face:function.call ((t (:foreground "#ffebbb" :inherit nil)))))
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(tree-sitter-hl-face:function.call ((t (:foreground "#ffebbb" :inherit nil))))
+ '(tree-sitter-hl-face:operator ((t (:foreground "#0aff8d" :inherit nil)))))
 
 (use-package multiple-cursors
   :ensure t
@@ -77,3 +77,26 @@
 
 (global-set-key (kbd "C-M-S-<up>") 'add-cursor-above)
 (global-set-key (kbd "C-M-S-<down>") 'add-cursor-below)
+
+(add-hook 'c-mode-hook #'lsp)
+(add-hook 'c++-mode-hook #'lsp)
+(use-package lsp-mode
+  :ensure t
+  :commands (lsp lsp-deferred)
+  :hook ((c-mode . lsp-deferred)
+         (c++-mode . lsp-deferred))
+  :init
+  (setq lsp-keymap-prefix "C-c l"))  ; Set your desired prefix key here.
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages '(company lsp-mode tree-sitter-langs multiple-cursors)))
+
+(use-package company
+  :ensure t
+  :config
+  (setq company-minimum-prefix-length 1
+        company-idle-delay 0.0)  ; Adjust as per your preference
+  :hook (after-init . global-company-mode))
