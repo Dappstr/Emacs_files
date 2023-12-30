@@ -78,12 +78,19 @@
 (global-set-key (kbd "C-M-S-<up>") 'add-cursor-above)
 (global-set-key (kbd "C-M-S-<down>") 'add-cursor-below)
 
+(use-package d-mode
+  :ensure t)
+
 (add-hook 'c-mode-hook #'lsp)
 (add-hook 'c++-mode-hook #'lsp)
+(add-hook 'd-mode #'lsp)
+
+(setq lsp-prefer-flymake nil)  ; Prefer other systems over Flymake
 (use-package lsp-mode
   :ensure t
   :commands (lsp lsp-deferred)
-  :hook ((c-mode . lsp-deferred)
+  :hook ((d-mode . lsp-deferred)
+	(c-mode . lsp-deferred)
          (c++-mode . lsp-deferred))
   :init
   (setq lsp-keymap-prefix "C-c l"))  ; Set your desired prefix key here.
@@ -94,9 +101,25 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages '(company lsp-mode tree-sitter-langs multiple-cursors)))
 
+(with-eval-after-load 'lsp-mode
+  (add-hook 'c++-mode-hook (lambda () (flymake-mode -1)) t))
+
+;;(defun my-disable-flymake ()
+;;  (run-at-time "1 sec" nil (lambda () (flymake-mode -1))))
+
+(add-hook 'c++-mode-hook 'my-disable-flymake)
+
 (use-package company
   :ensure t
   :config
   (setq company-minimum-prefix-length 1
         company-idle-delay 0.0)  ; Adjust as per your preference
   :hook (after-init . global-company-mode))
+
+;;(require 'flymake)
+
+;; Enable Flymake for all files that support it
+;;(add-hook 'find-file-hook 'flymake-mode-on)
+;;(add-hook 'c++-mode-hook (lambda () (flymake-mode -1)))
+;;(setq lsp-prefer-flymake nil)  ; Use nil to prefer Flycheck or other systems over Flymake
+;;(add-hook 'c++-mode-hook (lambda () (flymake-mode -1)) t)  ; 't' adds it to the end of the hook list
