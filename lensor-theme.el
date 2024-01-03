@@ -115,7 +115,7 @@
    `(font-lock-number-face        ((t (:inherit font-lock-constant-face))))
    `(font-lock-function-name-face ((t (:foreground , *lensor-bisque-1*))))
    `(font-lock-keyword-face       ((t (:foreground , *lensor-yellow*))))
-   `(font-lock-string-face        ((t (:foreground , *lensor-yellow*))))
+   `(font-lock-string-face        ((t (:foreground , *lensor-bright-orange*))))
    `(font-lock-escape-face        ((t (:foreground , *lensor-bright-yellow*))))
    `(font-lock-type-face          ((t (:foreground , *lensor-bright-blue*))))
    `(font-lock-operator-face      ((t (:foreground , *lensor-light-green*))))
