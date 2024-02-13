@@ -1,6 +1,6 @@
-;; Initialize package sources
-(require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(require 'package)
+  :hook (rust-mode . lsp-deferred)
 (package-initialize)
 
 ;; Ensure use-package is installed
@@ -53,9 +53,9 @@
 ;; '(tree-sitter-hl-face:operator ((t (:foreground "#0aff8d" :inherit nil)))))
 
 (custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+  :config
  ;; If there is more than one, they won't work right.
  '(tree-sitter-hl-face:function.call ((t (:foreground "#ffebbb" :inherit nil))))
  '(tree-sitter-hl-face:operator ((t (:foreground "#0aff8d" :inherit nil)))))
@@ -70,9 +70,9 @@
 (use-package rust-mode
   :ensure t
   :mode "\\.rs\\'"
-  :hook (rust-mode . lsp-deferred)
-  :config
   (setq rust-format-on-save t))
+  :config
+
 
 (use-package flycheck
   :ensure t
@@ -120,9 +120,12 @@
   (add-hook 'c++-mode-hook (lambda () (flymake-mode -1)) t))
 (add-hook 'c++-mode-hook 'my-disable-flymake)
 
+;; Disable flycheck for C++
+(add-hook 'c++-mode-hook (lambda () (flycheck-mode -1)))
+
 (use-package company
   :ensure t
-  :config
+        company-idle-delay 0.0)  ; Adjust as per your preference
   (setq company-minimum-prefix-length 1
         company-idle-delay 0.0)  ; Adjust as per your preference
   :hook (after-init . global-company-mode))
@@ -132,13 +135,13 @@
 ;; Enable Flymake for all files that support it
 ;;(add-hook 'find-file-hook 'flymake-mode-on)
 ;;(add-hook 'c++-mode-hook (lambda () (flymake-mode -1)))
-;;(setq lsp-prefer-flymake nil)  ; Use nil to prefer Flycheck or other systems over Flymake
-;;(add-hook 'c++-mode-hook (lambda () (flymake-mode -1)) t)  ; 't' adds it to the end of the hook list
+(setq lsp-prefer-flymake nil)  ; Use nil to prefer Flycheck or other systems over Flymake
+(add-hook 'c++-mode-hook (lambda () (flymake-mode -1)) t)  ; 't' adds it to the end of the hook list
 
 (setq x-select-enable-clipboard t)
 (setq x-select-enable-primary t)
 ;; Use actual tab characters
 (setq-default indent-tabs-mode t)
-
+(setq-default tab-width 4) ;; or any other number you prefer
 ;; Set the tab width
 (setq-default tab-width 4) ;; or any other number you prefer
