@@ -67,6 +67,17 @@
          ("C-<" . mc/mark-previous-like-this)
          ("C-c C-<" . mc/mark-all-like-this)))
 
+(use-package rust-mode
+  :ensure t
+  :mode "\\.rs\\'"
+  :hook (rust-mode . lsp-deferred)
+  :config
+  (setq rust-format-on-save t))
+
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
+
 (defun add-cursor-above ()
   (interactive)
   (mc/mark-previous-like-this 1))
@@ -90,23 +101,23 @@
   :ensure t
   :commands (lsp lsp-deferred)
   :hook ((d-mode . lsp-deferred)
-	(c-mode . lsp-deferred)
-         (c++-mode . lsp-deferred))
+		(c-mode . lsp-deferred)
+         (c++-mode . lsp-deferred)
+		(rust-mode . lsp-deferred))
   :init
-  (setq lsp-keymap-prefix "C-c l"))  ; Set your desired prefix key here.
+  (setq lsp-keymap-prefix "C-c l")
+  (setq lsp-rust-analyzer-server-command '("rust-analyzer")))  ; Set your desired prefix key here.
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages '(company lsp-mode tree-sitter-langs multiple-cursors)))
+ '(package-selected-packages
+   '(flycheck company lsp-mode tree-sitter-langs multiple-cursors)))
 
+;; Disable flymake for C++
 (with-eval-after-load 'lsp-mode
   (add-hook 'c++-mode-hook (lambda () (flymake-mode -1)) t))
-
-;;(defun my-disable-flymake ()
-;;  (run-at-time "1 sec" nil (lambda () (flymake-mode -1))))
-
 (add-hook 'c++-mode-hook 'my-disable-flymake)
 
 (use-package company
@@ -123,3 +134,11 @@
 ;;(add-hook 'c++-mode-hook (lambda () (flymake-mode -1)))
 ;;(setq lsp-prefer-flymake nil)  ; Use nil to prefer Flycheck or other systems over Flymake
 ;;(add-hook 'c++-mode-hook (lambda () (flymake-mode -1)) t)  ; 't' adds it to the end of the hook list
+
+(setq x-select-enable-clipboard t)
+(setq x-select-enable-primary t)
+;; Use actual tab characters
+(setq-default indent-tabs-mode t)
+
+;; Set the tab width
+(setq-default tab-width 4) ;; or any other number you prefer
