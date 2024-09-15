@@ -1,4 +1,40 @@
-(global-display-line-numbers-mode)  ;; Add any other settings you want to veri)
+;; Enable global line numbers
+(global-display-line-numbers-mode)
+
+;; Add MELPA repository for package management
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/") t)
+(package-initialize)
+
+;; Refresh package list if needed
+(unless package-archive-contents
+  (package-refresh-contents))
+
+;; Ensure use-package is installed (for easier package management)
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+(require 'use-package)
+
+;; Install Tree-sitter and Tree-sitter languages packages
+(use-package tree-sitter
+  :ensure t
+  :hook (prog-mode . global-tree-sitter-mode))
+
+(use-package tree-sitter-langs
+  :ensure t
+  :after tree-sitter)
+
+;; Enable Tree-sitter for specific major modes
+(dolist (hook '(c-mode-hook c++-mode-hook zig-mode-hook rust-mode-hook))
+  (add-hook hook #'tree-sitter-mode)
+  (add-hook hook #'tree-sitter-hl-mode))  ;; Enable highlighting
+
+;; Enable Tree-sitter for Zig mode
+;; NOT CURRENTLY WORKING
+(add-hook 'zig-mode-hook #'tree-sitter-mode)
+(add-hook 'zig-mode-hook #'tree-sitter-hl-mode)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -17,4 +53,4 @@
 (add-to-list 'custom-theme-load-path "C:/Users/laneb/Documents/emacs_files")
 
 ;; Load the custom theme
-(load-theme 'lensor t)  ; The 't' argument confirms loading without asking
+(load-theme 'lensor t)  ; The 't' argument c
