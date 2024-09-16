@@ -41,13 +41,40 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("3e6dc9dfb08b94357a348332644592e59e5292cc877910072ab985680c91edec" default)))
+   '("3e6dc9dfb08b94357a348332644592e59e5292cc877910072ab985680c91edec" default))
+ '(package-selected-packages '(ligature org tree-sitter-langs)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(require 'org) ;; Org mode
+
+(set-frame-font "Fira Code-10" nil t)
+
+;; Load and configure the ligature package
+(use-package ligature
+  :ensure t  ;; Ensures that the package is installed
+  :config
+  ;; Enable specific ligatures in programming modes
+  (ligature-set-ligatures 'prog-mode
+    '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\"
+      "{-" "[]" "::" ":::" ":=" "!!" "!=" "!==" "-}"
+      "--" "---" "-->" "->" "->>" "-<" "-<<" "-~"
+      "#{" "#[" "##" "###" "####" "#(" "#?" "#_" "#_("
+      ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*"
+      "/**" "/=" "/==" "/>" "//" "///" "&&" "||" "||="
+      "|=" "|>" "^=" "$>" "++" "+++" "+>" "=:=" "=="
+      "===" "==>" "=>" "=>>" "<=" "=<<" "=/=" ">-" ">="
+      ">=>" ">>" ">>-" ">>=" ">>>" "<*" "<*>" "<|" "<|>"
+      "<$" "<$>" "<!--" "<-" "<--" "<->" "<+" "<+>" "<="
+      "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<" "<~"
+      "<~~" "</" "</>" "~@" "~-" "~=" "~>" "~~" "~~>" "%%"))
+
+  ;; Enable ligatures in all text and programming modes
+  (global-ligature-mode t))
 
 ;; Add the custom theme directory to the load path
 (add-to-list 'custom-theme-load-path "C:/Users/laneb/Documents/emacs_files")
