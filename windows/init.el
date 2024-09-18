@@ -25,15 +25,20 @@
   :ensure t
   :after tree-sitter)
 
-;; Enable Tree-sitter for specific major modes
+;; Enable Tree-sitter for specific major modes including Zig
 (dolist (hook '(c-mode-hook c++-mode-hook zig-mode-hook rust-mode-hook))
   (add-hook hook #'tree-sitter-mode)
-  (add-hook hook #'tree-sitter-hl-mode))  ;; Enable highlighting
+  (add-hook hook #'tree-sitter-hl-mode))
 
-;; Enable Tree-sitter for Zig mode
-;; NOT CURRENTLY WORKING
-(add-hook 'zig-mode-hook #'tree-sitter-mode)
-(add-hook 'zig-mode-hook #'tree-sitter-hl-mode)
+;; Remove explicit Zig grammar setting, relying on tree-sitter-langs instead
+;; No need to set (setq treesit-language-source-alist '((zig . ("C:/msys64/mingw64/bin/libtree-sitter-zig.dll"))))
+
+;; Requires zig-mode to be installed at least from MELPA
+;; Confirm Zig grammar installation
+(use-package zig-mode
+  :ensure t
+  :hook ((zig-mode . tree-sitter-mode)
+         (zig-mode . tree-sitter-hl-mode)))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -42,7 +47,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("3e6dc9dfb08b94357a348332644592e59e5292cc877910072ab985680c91edec" default))
- '(package-selected-packages '(ligature org tree-sitter-langs)))
+ '(package-selected-packages '(multiple-cursors zig-mode ligature org tree-sitter-langs)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -56,28 +61,26 @@
 
 ;; Load and configure the ligature package
 (use-package ligature
-  :ensure t  ;; Ensures that the package is installed
+  :ensure t
   :config
-  ;; Enable specific ligatures in programming modes
   (ligature-set-ligatures 'prog-mode
-    '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\"
-      "{-" "[]" "::" ":::" ":=" "!!" "!=" "!==" "-}"
-      "--" "---" "-->" "->" "->>" "-<" "-<<" "-~"
-      "#{" "#[" "##" "###" "####" "#(" "#?" "#_" "#_("
-      ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*"
-      "/**" "/=" "/==" "/>" "//" "///" "&&" "||" "||="
-      "|=" "|>" "^=" "$>" "++" "+++" "+>" "=:=" "=="
-      "===" "==>" "=>" "=>>" "<=" "=<<" "=/=" ">-" ">="
-      ">=>" ">>" ">>-" ">>=" ">>>" "<*" "<*>" "<|" "<|>"
-      "<$" "<$>" "<!--" "<-" "<--" "<->" "<+" "<+>" "<="
-      "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<" "<~"
-      "<~~" "</" "</>" "~@" "~-" "~=" "~>" "~~" "~~>" "%%"))
-
-  ;; Enable ligatures in all text and programming modes
+    '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "[]" "::" ":::" ":=" "!!" "!=" "!==" "-}"
+      "--" "---" "-->" "->" "->>" "-<" "-<<" "-~" "#{" "#[" "##" "###" "####" "#(" "#?" "#_" "#_("
+      ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*" "/**" "/=" "/==" "/>" "//" "///" "&&" "||"
+      "||=" "|=" "|>" "^=" "$>" "++" "+++" "+>" "=:=" "==" "===" "==>" "=>" "=>>" "<=" "=<<" "=/="
+      ">-" ">=" ">=>" ">>" ">>-" ">>=" ">>>" "<*" "<*>" "<|" "<|>" "<$" "<$>" "<!--" "<-" "<--"
+      "<->" "<+" "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<" "<~" "<~~" "</" "</>"
+      "~@" "~-" "~=" "~>" "~~" "~~>" "%%"))
   (global-ligature-mode t))
 
 ;; Add the custom theme directory to the load path
 (add-to-list 'custom-theme-load-path "C:/Users/laneb/Documents/emacs_files")
 
 ;; Load the custom theme
-(load-theme 'lensor t)  ; The 't' argument c
+(load-theme 'lensor t)  ; The 't' argument confirms loading without asking
+
+
+;; Spawn more cursors
+(require 'multiple-cursors)
+(global-set-key (kbd "C-M-S-<up>") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-M-S-<down>") 'mc/mark-next-like-this)
