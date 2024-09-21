@@ -84,3 +84,12 @@
 (require 'multiple-cursors)
 (global-set-key (kbd "C-M-S-<up>") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-M-S-<down>") 'mc/mark-next-like-this)
+
+;; Change indentation to 4 spaces
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (setq c-basic-offset 4) ;; Set the basic indent to 4 spaces
+            (setq tab-width 4)      ;; Set tab width to 4 spaces
+            (setq indent-tabs-mode nil) ;; Use spaces instead of tabs
+            (c-set-offset 'substatement-open 0))) ;; No extra indent for opening braces
+
