@@ -18,27 +18,42 @@
 
 ;; Install Tree-sitter and Tree-sitter languages packages
 (use-package tree-sitter
-  :ensure t
-  :hook (prog-mode . global-tree-sitter-mode))
+  :ensure t)
 
 (use-package tree-sitter-langs
   :ensure t
   :after tree-sitter)
 
-;; Enable Tree-sitter for specific major modes including Zig
-(dolist (hook '(c-mode-hook c++-mode-hook zig-mode-hook rust-mode-hook))
+;; Enable Tree-sitter for specific major modes excluding Zig
+(dolist (hook '(c-mode-hook c++-mode-hook rust-mode-hook))
   (add-hook hook #'tree-sitter-mode)
   (add-hook hook #'tree-sitter-hl-mode))
 
 ;; Remove explicit Zig grammar setting, relying on tree-sitter-langs instead
 ;; No need to set (setq treesit-language-source-alist '((zig . ("C:/msys64/mingw64/bin/libtree-sitter-zig.dll"))))
 
-;; Requires zig-mode to be installed at least from MELPA
-;; Confirm Zig grammar installation
+;; Install and configure zig-mode
 (use-package zig-mode
-  :ensure t
-  :hook ((zig-mode . tree-sitter-mode)
-         (zig-mode . tree-sitter-hl-mode)))
+  :ensure t)
+
+;; Disable Tree-sitter for zig-mode
+(with-eval-after-load 'zig-mode
+  (add-hook 'zig-mode-hook (lambda ()
+                             (tree-sitter-mode -1)    ;; Disable tree-sitter-mode
+                             (tree-sitter-hl-mode -1) ;; Disable tree-sitter highlighting
+                             (my-zig-operator-highlighting)))) ;; Apply custom operator highlighting
+
+;; Custom operator highlighting for zig-mode
+(defun my-zig-operator-highlighting ()
+  "Add custom highlighting for operators in zig-mode."
+  (font-lock-add-keywords nil
+                          '(("\\(\\+\\|-\\|\\*\\|/\\|%\\|&&\\|||\\|==\\|!=\\|<=\\|>=\\|<\\|>\\|!\\|&\\|\\^\\|~\\|=\\|\\.\\)"
+                             0 'font-lock-operator-face))))  ;; Use custom face for operators
+
+;; Define face for operators
+(defface font-lock-operator-face
+  '((t (:foreground "green"))) ;; Set your desired color for operators
+  "Face for highlighting operators.")
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -47,7 +62,8 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("3e6dc9dfb08b94357a348332644592e59e5292cc877910072ab985680c91edec" default))
- '(package-selected-packages '(multiple-cursors zig-mode ligature org tree-sitter-langs)))
+ '(package-selected-packages
+   '(rainbow-delimiters multiple-cursors zig-mode ligature org tree-sitter-langs)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -79,7 +95,6 @@
 ;; Load the custom theme
 (load-theme 'lensor t)  ; The 't' argument confirms loading without asking
 
-
 ;; Spawn more cursors
 (require 'multiple-cursors)
 (global-set-key (kbd "C-M-S-<up>") 'mc/mark-previous-like-this)
@@ -93,3 +108,18 @@
             (setq indent-tabs-mode nil) ;; Use spaces instead of tabs
             (c-set-offset 'substatement-open 0))) ;; No extra indent for opening braces
 
+;; Load and configure rainbow-delimiters
+(require 'rainbow-delimiters)
+(custom-set-faces
+ '(rainbow-delimiters-depth-1-face ((t (:foreground "red"))))
+ '(rainbow-delimiters-depth-2-face ((t (:foreground "orange"))))
+ '(rainbow-delimiters-depth-3-face ((t (:foreground "yellow"))))
+ '(rainbow-delimiters-depth-4-face ((t (:foreground "green"))))
+ '(rainbow-delimiters-depth-5-face ((t (:foreground "light sky blue"))))
+ '(rainbow-delimiters-depth-6-face ((t (:foreground "violet"))))
+ '(rainbow-delimiters-depth-7-face ((t (:foreground "purple"))))
+ '(rainbow-delimiters-depth-8-face ((t (:foreground "cyan"))))
+ '(rainbow-delimiters-depth-9-face ((t (:foreground "magenta")))))
+
+;; Enable rainbow-delimiters in all programming modes
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
