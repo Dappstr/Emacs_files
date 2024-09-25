@@ -1,6 +1,6 @@
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; Initialize package sources
 (require 'package)
-  :hook (rust-mode . lsp-deferred)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
 ;; Ensure use-package is installed
@@ -53,9 +53,9 @@
 ;; '(tree-sitter-hl-face:operator ((t (:foreground "#0aff8d" :inherit nil)))))
 
 (custom-set-faces
- ;; Your init file should contain only one such instance.
+ ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
-  :config
+ ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(tree-sitter-hl-face:function.call ((t (:foreground "#ffebbb" :inherit nil))))
  '(tree-sitter-hl-face:operator ((t (:foreground "#0aff8d" :inherit nil)))))
@@ -70,9 +70,9 @@
 (use-package rust-mode
   :ensure t
   :mode "\\.rs\\'"
-  (setq rust-format-on-save t))
+  :hook (rust-mode . lsp-deferred)
   :config
-
+  (setq rust-format-on-save t))
 
 (use-package flycheck
   :ensure t
@@ -101,19 +101,21 @@
   :ensure t
   :commands (lsp lsp-deferred)
   :hook ((d-mode . lsp-deferred)
-		(c-mode . lsp-deferred)
+                 (c-mode . lsp-deferred)
          (c++-mode . lsp-deferred)
-		(rust-mode . lsp-deferred))
+                 (rust-mode . lsp-deferred))
   :init
   (setq lsp-keymap-prefix "C-c l")
   (setq lsp-rust-analyzer-server-command '("rust-analyzer")))  ; Set your desired prefix key here.
+
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(flycheck company lsp-mode tree-sitter-langs multiple-cursors)))
+   '(rainbow-delimiters flycheck company lsp-mode tree-sitter-langs multiple-cursors)))
 
 ;; Disable flymake for C++
 (with-eval-after-load 'lsp-mode
@@ -125,7 +127,7 @@
 
 (use-package company
   :ensure t
-        company-idle-delay 0.0)  ; Adjust as per your preference
+  :config
   (setq company-minimum-prefix-length 1
         company-idle-delay 0.0)  ; Adjust as per your preference
   :hook (after-init . global-company-mode))
@@ -142,6 +144,30 @@
 (setq x-select-enable-primary t)
 ;; Use actual tab characters
 (setq-default indent-tabs-mode t)
-(setq-default tab-width 4) ;; or any other number you prefer
+
 ;; Set the tab width
-(setq-default tab-width 4) ;; or any other number you prefer
+;;(setq-default tab-width 4) ;; or any other number you prefer
+
+;; Change indentation to 4 spaces
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (setq c-basic-offset 4) ;; Set the basic indent to 4 spaces
+            (setq tab-width 4)      ;; Set tab width to 4 spaces
+            (setq indent-tabs-mode nil) ;; Use spaces instead of tabs
+            (c-set-offset 'substatement-open 0))) ;; No extra indent for opening braces
+
+(add-hook 'rust-mode-hook #'lsp-deferred)
+
+(require 'rainbow-delimiters)
+(custom-set-faces
+ '(rainbow-delimiters-depth-1-face ((t (:foreground "red"))))
+ '(rainbow-delimiters-depth-2-face ((t (:foreground "orange"))))
+ '(rainbow-delimiters-depth-3-face ((t (:foreground "yellow"))))
+ '(rainbow-delimiters-depth-4-face ((t (:foreground "green"))))
+ '(rainbow-delimiters-depth-5-face ((t (:foreground "light sky blue"))))
+ '(rainbow-delimiters-depth-6-face ((t (:foreground "violet"))))
+ '(rainbow-delimiters-depth-7-face ((t (:foreground "purple"))))
+ '(rainbow-delimiters-depth-8-face ((t (:foreground "cyan"))))
+ '(rainbow-delimiters-depth-9-face ((t (:foreground "magenta")))))
+;; Enable rainbow-delimiters in all programming modes
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
