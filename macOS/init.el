@@ -57,6 +57,15 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(rainbow-delimiters-depth-1-face ((t (:foreground "red"))))
+ '(rainbow-delimiters-depth-2-face ((t (:foreground "orange"))))
+ '(rainbow-delimiters-depth-3-face ((t (:foreground "yellow"))))
+ '(rainbow-delimiters-depth-4-face ((t (:foreground "green"))))
+ '(rainbow-delimiters-depth-5-face ((t (:foreground "light sky blue"))))
+ '(rainbow-delimiters-depth-6-face ((t (:foreground "violet"))))
+ '(rainbow-delimiters-depth-7-face ((t (:foreground "purple"))))
+ '(rainbow-delimiters-depth-8-face ((t (:foreground "cyan"))))
+ '(rainbow-delimiters-depth-9-face ((t (:foreground "magenta"))))
  '(tree-sitter-hl-face:function.call ((t (:foreground "#ffebbb" :inherit nil))))
  '(tree-sitter-hl-face:operator ((t (:foreground "#0aff8d" :inherit nil)))))
 
@@ -120,7 +129,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(rainbow-delimiters flycheck company lsp-mode tree-sitter-langs multiple-cursors)))
+   '(ligature rainbow-delimiters flycheck company lsp-mode tree-sitter-langs multiple-cursors)))
 
 ;; Disable flymake for C++
 (with-eval-after-load 'lsp-mode
@@ -164,15 +173,22 @@
 (add-hook 'rust-mode-hook #'lsp-deferred)
 
 (require 'rainbow-delimiters)
-(custom-set-faces
- '(rainbow-delimiters-depth-1-face ((t (:foreground "red"))))
- '(rainbow-delimiters-depth-2-face ((t (:foreground "orange"))))
- '(rainbow-delimiters-depth-3-face ((t (:foreground "yellow"))))
- '(rainbow-delimiters-depth-4-face ((t (:foreground "green"))))
- '(rainbow-delimiters-depth-5-face ((t (:foreground "light sky blue"))))
- '(rainbow-delimiters-depth-6-face ((t (:foreground "violet"))))
- '(rainbow-delimiters-depth-7-face ((t (:foreground "purple"))))
- '(rainbow-delimiters-depth-8-face ((t (:foreground "cyan"))))
- '(rainbow-delimiters-depth-9-face ((t (:foreground "magenta")))))
+
 ;; Enable rainbow-delimiters in all programming modes
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+
+(set-frame-font "Fira Code-12" nil t)
+
+;; Load and configure the ligature package
+(use-package ligature
+  :ensure t
+  :config
+  (ligature-set-ligatures 'prog-mode
+    '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "[]" "::" ":::" ":=" "!!" "!=" "!==" "-}"
+      "--" "---" "-->" "->" "->>" "-<" "-<<" "-~" "#{" "#[" "##" "###" "####" "#(" "#?" "#_" "#_("
+      ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*" "/**" "/=" "/==" "/>" "//" "///" "&&" "||"
+      "||=" "|=" "|>" "^=" "$>" "++" "+++" "+>" "=:=" "==" "===" "==>" "=>" "=>>" "<=" "=<<" "=/="
+      ">-" ">=" ">=>" ">>" ">>-" ">>=" ">>>" "<*" "<*>" "<|" "<|>" "<$" "<$>" "<!--" "<-" "<--"
+      "<->" "<+" "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<" "<~" "<~~" "</" "</>"
+      "~@" "~-" "~=" "~>" "~~" "~~>" "%%"))
+  (global-ligature-mode t))
