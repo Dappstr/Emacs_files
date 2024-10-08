@@ -67,6 +67,11 @@
          ("C-<" . mc/mark-previous-like-this)
          ("C-c C-<" . mc/mark-all-like-this)))
 
+;; Spawn more cursors
+(require 'multiple-cursors)
+(global-set-key (kbd "C-M-S-<up>") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-M-S-<down>") 'mc/mark-next-like-this)
+
 (use-package rust-mode
   :ensure t
   :mode "\\.rs\\'"
@@ -86,8 +91,8 @@
   (interactive)
   (mc/mark-next-like-this 1))
 
-(global-set-key (kbd "C-M-S-<up>") 'add-cursor-above)
-(global-set-key (kbd "C-M-S-<down>") 'add-cursor-below)
+;;(global-set-key (kbd "C-M-S-<up>") 'add-cursor-above)
+;;(global-set-key (kbd "C-M-S-<down>") 'add-cursor-below)
 
 (use-package d-mode
   :ensure t)
@@ -101,14 +106,14 @@
   :ensure t
   :commands (lsp lsp-deferred)
   :hook ((d-mode . lsp-deferred)
-                 (c-mode . lsp-deferred)
+		(c-mode . lsp-deferred)
          (c++-mode . lsp-deferred)
-                 (rust-mode . lsp-deferred))
+		(rust-mode . lsp-deferred))
   :init
   (setq lsp-keymap-prefix "C-c l")
   (setq lsp-rust-analyzer-server-command '("rust-analyzer")))  ; Set your desired prefix key here.
-
-
+  
+  
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
