@@ -129,7 +129,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(ligature rainbow-delimiters flycheck company lsp-mode tree-sitter-langs multiple-cursors)))
+   '(zig-mode ligature rainbow-delimiters flycheck company lsp-mode tree-sitter-langs multiple-cursors)))
 
 ;; Disable flymake for C++
 (with-eval-after-load 'lsp-mode
@@ -177,7 +177,7 @@
 ;; Enable rainbow-delimiters in all programming modes
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 
-(set-frame-font "Fira Code-12" nil t)
+(set-frame-font "Fira Code-13" nil t)
 
 ;; Load and configure the ligature package
 (use-package ligature
@@ -192,3 +192,18 @@
       "<->" "<+" "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<" "<~" "<~~" "</" "</>"
       "~@" "~-" "~=" "~>" "~~" "~~>" "%%"))
   (global-ligature-mode t))
+
+;; Custom operator highlighting for zig-mode
+(defun my-zig-operator-highlighting ()
+  "Add custom highlighting for operators in zig-mode."
+  (font-lock-add-keywords nil
+                          '(("\\(\\+\\|-\\|\\*\\|/\\|%\\|&&\\|||\\|==\\|!=\\|<=\\|>=\\|<\\|>\\|!\\|&\\|\\^\\|~\\|=\\|\\.\\)"
+                             0 'font-lock-operator-face))))  ;; Use custom face for operators
+
+;; Add the function to zig-mode-hook
+(add-hook 'zig-mode-hook 'my-zig-operator-highlighting)
+
+;; Define the custom face if not already defined
+(defface font-lock-operator-face
+  '((t (:foreground "green")))  ;; Customize the face with your preferred color
+  "Face for operators.")
