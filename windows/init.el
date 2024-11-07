@@ -63,7 +63,7 @@
  '(custom-safe-themes
    '("3e6dc9dfb08b94357a348332644592e59e5292cc877910072ab985680c91edec" default))
  '(package-selected-packages
-   '(company eglot rainbow-delimiters multiple-cursors zig-mode ligature org tree-sitter-langs)))
+   '(magit company eglot rainbow-delimiters multiple-cursors zig-mode ligature org tree-sitter-langs)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -146,3 +146,16 @@
 (add-hook 'c-mode-hook 'eglot-ensure)
 (add-hook 'c++-mode-hook 'eglot-ensure)
 (add-hook 'zig-mode-hook 'eglot-ensure)
+
+;; CONFIG FOR USING GIT'S BASH AS THE DEFAULT SHELL
+
+;; Set the shell executable path
+(setq explicit-shell-file-name "C:/Progra~1/Git/bin/bash.exe")
+(setq shell-file-name explicit-shell-file-name)
+
+;; Specify arguments for bash
+(setq explicit-bash.exe-args '("--login" "-i"))
+
+(add-to-list 'exec-path "C:/Program Files/Git/bin")
+(setenv "PATH" (concat "C:\\Program Files\\Git\\bin;" (getenv "PATH")))
+
