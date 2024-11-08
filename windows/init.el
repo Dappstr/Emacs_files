@@ -159,3 +159,20 @@
 (add-to-list 'exec-path "C:/Program Files/Git/bin")
 (setenv "PATH" (concat "C:\\Program Files\\Git\\bin;" (getenv "PATH")))
 
+
+;; Display startup info in new window
+(defun display-startup-info ()
+  "Open a buffer displaying startup time and number of loaded packages."
+  (let ((load-time (float-time (time-subtract after-init-time before-init-time)))
+        (package-count (length package-activated-list)))
+    (with-current-buffer (get-buffer-create "*Startup Info*")
+      (erase-buffer)
+      (insert (format "Emacs started in %.2f seconds\n" load-time))
+      (insert (format "Loaded %d packages\n" package-count))
+      (goto-char (point-min))
+      (read-only-mode 1))
+    ;; Display the *Startup Info* buffer
+    (display-buffer "*Startup Info*")))
+
+;; Use `emacs-startup-hook` to run this function after startup
+(add-hook 'emacs-startup-hook 'display-startup-info)
