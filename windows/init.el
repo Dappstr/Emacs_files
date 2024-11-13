@@ -161,18 +161,91 @@
 
 
 ;; Display startup info in new window
-(defun display-startup-info ()
-  "Open a buffer displaying startup time and number of loaded packages."
-  (let ((load-time (float-time (time-subtract after-init-time before-init-time)))
-        (package-count (length package-activated-list)))
-    (with-current-buffer (get-buffer-create "*Startup Info*")
-      (erase-buffer)
-      (insert (format "Emacs started in %.2f seconds\n" load-time))
-      (insert (format "Loaded %d packages\n" package-count))
-      (goto-char (point-min))
-      (read-only-mode 1))
-    ;; Display the *Startup Info* buffer
-    (display-buffer "*Startup Info*")))
+;;(defun display-startup-info ()
+;;  "Open a buffer displaying startup time and number of loaded packages."
+;;  (let ((load-time (float-time (time-subtract after-init-time before-init-time)))
+;;        (package-count (length package-activated-list)))
+;;    (with-current-buffer (get-buffer-create "*Startup Info*")
+;;      (erase-buffer)
+;;      (insert (format "Emacs started in %.2f seconds\n" load-time))
+;;      (insert (format "Loaded %d packages\n" package-count))
+;;      (goto-char (point-min))
+;;      (read-only-mode 1))
+;;    ;; Display the *Startup Info* buffer
+;;    (display-buffer "*Startup Info*")))
+;;
+;;;; Use `emacs-startup-hook` to run this function after startup
+;;(add-hook 'emacs-startup-hook 'display-startup-info)
 
-;; Use `emacs-startup-hook` to run this function after startup
-(add-hook 'emacs-startup-hook 'display-startup-info)
+
+;; CUSTOM SPLASH SCREEN
+(defun my-splash-screen ()
+  "Display custom ASCII art with Emacs load stats on startup."
+  (switch-to-buffer "*splash*")
+  (erase-buffer)
+  ;; Insert ASCII Art
+  (insert "
+                              @@@@############@@@@                              
+                        @@@#########+++++++*#########@@                         
+                     @@#####++++++++++++++++++++++++#####@@                     
+                  @@####++++++++++++++++++++++++++++++++####@@                  
+                @####++++++++++++++++++++++++++++++++++++++###%@                
+              @###+++++++++++++++++++++++++++++++++++++++++++###%@              
+            @###++++++++++++++++++++++++++++:       ++++++++++++%%%@            
+          @###+++++++++++++++++++++++-                :++++++++++#%%@           
+         @###+++++++++++++++++++++++++++++++++++        +++++++++++%%%@         
+        @##++++++++++++++++++++++++++++++++++++         ++++++++++++#%%@        
+      @%##++++++++++++++++++++++++=.                    ++++++++++++++%%@       
+     @%##+++++++++++++++                               ++++++++++++++++%%@      
+     @##++++++++++++++                       :=+++++++++++++++++++++++++%%@     
+    @##+++++++++++++++.            ++++++++++++++++++++++++++++++++++++*#%%@    
+   @##++++++++++++++++++         ++++++++++++++++++++++++++++++++++++****%%@    
+   @##+++++++++++++++++++.       .++++++++++++++++++++++++++++++++********%%@   
+  @##+++++++++++++++++++++++        :+++++++++++++++++++++++++++**********%%@   
+  @##+++++++++++++++++++++++++=         +++++++++++++++++++++**************%%@  
+  @##+++++++++++++++++++++++++++++          +++++++++++++++****************%%@  
+ @###++++++++++++++++++++++++++++++++++         ++++++++*******************%%@  
+ @##++++++++++++++++++++++++                        ++*********************%%@  
+ @##+++++++++++++++++++                     .++++++************************%%@  
+ @###+++++++++++++++                  +++++++++++**************************%%@  
+  @##+++++++++++++                ++++++++++++*****************************%%@  
+  @##+++++++++++:              +++++++++++++*******************************%%@  
+  @##+++++++++++             ++++++++++++*********************************%%%   
+   @##++++++++++            +++++++++++***********************************%%@   
+   @##+++++++++++            +++++++*************************************%%%    
+    @##+++++++++++.              +***************************************%%@    
+     @##+++++++++++++                                  .****************%%@     
+     @%##++++++++++++++++.                                   **********%%@      
+      @%%%+++++++++++++++++****:                            **********%%@       
+       @%%%+++++++++++++***********************          ************%%@        
+         @%%*+++++++++*******************           ***************%%%@         
+          @%%%+++++**************-          +*********************%%@@          
+            @%%%+***********************************************%%%@            
+             @@%%%********************************************%%%@              
+               @@%%%***************************************%%%%@                
+                  @%%%%#********************************%%%%@@                  
+                    @@%%%%%#************************%%%%%@@                     
+                        @@%%%%%%%%#**********%%%%%%%%@@@                        
+                             @@@%%%%%%%%%%%%%%%@@@@                             
+                                                                                
+")
+  ;; Display package and load time info
+  (let ((package-count (length package-activated-list))
+        (load-time (emacs-init-time)))
+    (insert (format "\n\nLoaded %d packages in %s\n" package-count load-time)))
+  ;; Make buffer read-only and display it
+  (setq buffer-read-only t)
+  (goto-char (point-min)))
+
+;; Show splash screen only once
+(add-hook 'emacs-startup-hook 'my-splash-screen)
+(setq inhibit-startup-message t)  ;; Disable default splash screen
+
+;; Remove tool bar and menu bar
+(tool-bar-mode 0)
+(menu-bar-mode 0)
+
+;; Disable audible bell
+(setq ring-bell-function 'ignore)
+
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . html-mode))
