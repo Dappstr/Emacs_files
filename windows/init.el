@@ -1,3 +1,5 @@
+;; -*- lexical-binding: t; -*-
+
 ;; Enable global line numbers
 (global-display-line-numbers-mode)
 
@@ -249,3 +251,69 @@
 (setq ring-bell-function 'ignore)
 
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . html-mode))
+
+;; Set indentation for text files
+(add-hook 'text-mode-hook
+          (lambda ()
+            (setq-local tab-width 4)        ;; Set tab width to 4 spaces
+            (setq-local indent-tabs-mode t))) ;; Use tabs for indentation
+
+
+;; Config for building and running (C/C++) projects within GNU Emacs
+;; MUST USE CMAKE WITH "add_executable(...)"
+
+(defun find-executable-name (project-root)
+  "Find the executable name from the CMakeLists.txt file in the project root."
+  (let ((cmake-file (concat project-root "CMakeLists.txt")))
+    (with-temp-buffer
+      (insert-file-contents cmake-file)
+      ;; Regex to find the executable name in add_executable
+      (if (re-search-forward "add_executable\\s-*[(]\\s-*\\([a-zA-Z0-9_]+\\)" nil t)
+          (match-string 1)
+        (error "No executable defined in CMakeLists.txt")))))
+
+(defun compile-and-run ()
+  "Generalized function to compile and run a CMake project within Emacs."
+  (interactive)
+  (let* ((project-root (locate-dominating-file default-directory "CMakeLists.txt"))
+         (build-dir (concat project-root "build/"))
+         (executable-name (find-executable-name project-root)) ;; Use dynamic executable name
+         (executable-path (concat build-dir executable-name (if (eq system-type 'windows-nt) ".exe" "")))
+         (output-buffer "*run-output*"))
+    (unless project-root
+      (error "No CMakeLists.txt found in the project hierarchy"))
+    ;; Ensure the build directory exists
+    (unless (file-directory-p build-dir)
+      (make-directory build-dir t))
+    ;; Set the build directory as default-directory for compile
+    (let ((default-directory build-dir))
+      ;; Compile the project
+      (compile "cmake --build .")
+      ;; Wait for the compilation buffer to be created
+      (with-current-buffer "*compilation*"
+        (let ((output-buffer output-buffer)) ;; Capture `output-buffer` in the sentinel
+          ;; Set up a process sentinel to handle the build result
+          (set-process-sentinel
+           (get-buffer-process (current-buffer))
+           (lambda (_proc _msg)
+             (with-current-buffer "*compilation*"
+               (goto-char (point-max))
+               (cond
+                ;; Handle "no work to do"
+                ((re-search-backward "no work to do" nil t)
+                 (message "Nothing to build; running the executable anyway.")
+                 (with-current-buffer (get-buffer-create output-buffer)
+                   (erase-buffer))
+                 (start-process "run-executable" output-buffer executable-path)
+                 (switch-to-buffer output-buffer))
+                ;; Handle "Build finished"
+                ((re-search-backward "Build finished\\." nil t)
+                 (message "Build finished; running the executable.")
+                 (with-current-buffer (get-buffer-create output-buffer)
+                   (erase-buffer))
+                 (start-process "run-executable" output-buffer executable-path)
+                 (switch-to-buffer output-buffer))
+                ;; Handle errors
+                (t
+                 (message "Compilation failed.")))))))))))
+
