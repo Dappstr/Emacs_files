@@ -273,13 +273,14 @@
         (error "No executable defined in CMakeLists.txt")))))
 
 (defun compile-and-run ()
-  "Generalized function to compile and run a CMake project within Emacs."
+  "Compile and run a CMake project within Emacs with optional arguments."
   (interactive)
   (let* ((project-root (locate-dominating-file default-directory "CMakeLists.txt"))
          (build-dir (concat project-root "build/"))
          (executable-name (find-executable-name project-root)) ;; Use dynamic executable name
          (executable-path (concat build-dir executable-name (if (eq system-type 'windows-nt) ".exe" "")))
-         (output-buffer "*run-output*"))
+         (output-buffer "*run-output*")
+         (args (read-string "Arguments for the executable (leave blank for none): ")))
     (unless project-root
       (error "No CMakeLists.txt found in the project hierarchy"))
     ;; Ensure the build directory exists
@@ -304,16 +305,15 @@
                  (message "Nothing to build; running the executable anyway.")
                  (with-current-buffer (get-buffer-create output-buffer)
                    (erase-buffer))
-                 (start-process "run-executable" output-buffer executable-path)
+                 (apply 'start-process "run-executable" output-buffer executable-path (split-string-and-unquote args))
                  (switch-to-buffer output-buffer))
                 ;; Handle "Build finished"
                 ((re-search-backward "Build finished\\." nil t)
                  (message "Build finished; running the executable.")
                  (with-current-buffer (get-buffer-create output-buffer)
                    (erase-buffer))
-                 (start-process "run-executable" output-buffer executable-path)
+                 (apply 'start-process "run-executable" output-buffer executable-path (split-string-and-unquote args))
                  (switch-to-buffer output-buffer))
                 ;; Handle errors
                 (t
                  (message "Compilation failed.")))))))))))
-
