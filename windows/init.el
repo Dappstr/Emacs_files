@@ -193,7 +193,7 @@
   (erase-buffer)
   ;; Insert ASCII Art
   (insert "
-  ' .
+  , .
  o   \\\\
       \\\\
        \\\\
@@ -205,7 +205,9 @@
       //     \\\\
      //       \\\\_,	
 
-	Remember Lens_r")
+")
+  ;; Add the highlighted text
+  (insert (propertize "    Remember Lens_r" 'face '(:foreground "yellow")))
 
   ;; Display package and load time info
   (let ((package-count (length package-activated-list))
