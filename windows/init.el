@@ -296,3 +296,11 @@
                 (t
                  (message "Compilation failed.")))))))))))
 
+
+;; SWITCH TO TEXT-MODE WHEN IN THE SCRATCH BUFFER
+(defun my-scratch-mode ()
+  "Set the `*scratch*` buffer to `text-mode`."
+  (when (string= (buffer-name) "*scratch*")
+    (text-mode)))
+
+(add-hook 'after-change-major-mode-hook 'my-scratch-mode)
