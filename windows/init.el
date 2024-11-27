@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
-;; PACKAGES REQUIRED: company, eglot, haskell-mode, ligatures, magit, multiple-cursors, org, python-mode, rainbow-delimiters, rust-mode, tree-sitter-langs, zig-mode, compat, dash, eldoc, jsonrpc, magit-selection, reformatter, transient, tree-sitter, tsc, with-editor
+;; PACKAGES REQUIRED: auctex, company, eglot, haskell-mode, latex-preview-pane, ligatures, magit, multiple-cursors, org, python-mode, rainbow-delimiters, rust-mode, tree-sitter-langs, zig-mode, compat, dash, eldoc, jsonrpc, magit-selection, reformatter, transient, tree-sitter, tsc, with-editor
 
 ;; Enable global line numbers
 (global-display-line-numbers-mode)
@@ -69,7 +69,7 @@
  '(custom-safe-themes
    '("3e6dc9dfb08b94357a348332644592e59e5292cc877910072ab985680c91edec" default))
  '(package-selected-packages
-   '(python-mode haskell-mode rust-mode magit company eglot rainbow-delimiters multiple-cursors zig-mode ligature org tree-sitter-langs)))
+   '(auctex latex-preview-pane python-mode haskell-mode rust-mode magit company eglot rainbow-delimiters multiple-cursors zig-mode ligature org tree-sitter-langs)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -306,3 +306,10 @@
     (text-mode)))
 
 (add-hook 'after-change-major-mode-hook 'my-scratch-mode)
+
+(require 'tex-site)
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq-default TeX-master nil)
+(add-to-list 'auto-mode-alist '("\\.tex\\'" . LaTeX-mode))
+(add-to-list 'auto-mode-alist '("\\.lat\\'" . LaTeX-mode))
