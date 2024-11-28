@@ -123,6 +123,9 @@
    `(font-lock-property-face      ((t (:foreground , *lensor-bright-yellow*))))
    `(font-lock-variable-name-face ((t (:foreground , *lensor-light-blue-green*))))
 
+   ;;; Tree-sitter faces
+   `(tree-sitter-hl-face:function.call ((t (:inherit font-lock-function-name-face))))
+
    ;;; Button and links
    `(link         ((t (:underline t :foreground , *link*))))
    `(link-visited ((t (:underline t :foreground , *link-visited*))))
@@ -300,8 +303,7 @@
           , *lensor-yellow*
           ))))
 
-	`(tree-sitter-hl-face:operator ((t (:foreground , *lensor-light-green*)))) ;; ADDED
-
+   `(tree-sitter-hl-face:operator ((t (:foreground , *lensor-light-green*))))
 
    ;;; imenu
    `(imenu-list-entry-face-0 ((t (:foreground , *lensor-light-blue*))))
@@ -322,4 +324,3 @@
 (provide-theme 'lensor)
 
 ;;; lensor-theme.el ends here
-
