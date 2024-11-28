@@ -137,10 +137,6 @@
 (add-to-list 'eglot-server-programs '((c-mode c++-mode) . ("clangd")))
 (add-to-list 'eglot-server-programs '(zig-mode . ("zls")))
 
-;; Automatically start Eglot for C and C++ files
-(add-hook 'c-mode-hook 'eglot-ensure)
-(add-hook 'c++-mode-hook 'eglot-ensure)
-
 ;; Enable Company Mode globally
 (add-hook 'after-init-hook 'global-company-mode)
 
