@@ -1,6 +1,6 @@
 ;; -*- lexical-binding: t; -*-
 
-;; PACKAGES REQUIRED: auctex, company, eglot, haskell-mode, latex-preview-pane, ligatures, magit, multiple-cursors, org, python-mode, rainbow-delimiters, rust-mode, tree-sitter-langs, zig-mode, compat, dash, eldoc, jsonrpc, magit-selection, reformatter, transient, tree-sitter, tsc, with-editor
+;; PACKAGES REQUIRED: auctex, cmake-mode, company, eglot, haskell-mode, latex-preview-pane, ligatures, magit, multiple-cursors, org, python-mode, rainbow-delimiters, rust-mode, tree-sitter-langs, zig-mode, compat, dash, eldoc, jsonrpc, magit-selection, reformatter, transient, tree-sitter, tsc, with-editor
 
 ;; Enable global line numbers
 (global-display-line-numbers-mode)
@@ -68,8 +68,10 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("3e6dc9dfb08b94357a348332644592e59e5292cc877910072ab985680c91edec" default))
+ '(org-agenda-files
+   '("c:/Users/laneb/Documents/GitHub/MAL_collection/CPP/NOTES.org"))
  '(package-selected-packages
-   '(auctex latex-preview-pane python-mode haskell-mode rust-mode magit company eglot rainbow-delimiters multiple-cursors zig-mode ligature org tree-sitter-langs)))
+   '(cmake-mode auctex latex-preview-pane python-mode haskell-mode rust-mode magit company eglot rainbow-delimiters multiple-cursors zig-mode ligature org tree-sitter-langs)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -309,3 +311,16 @@
 (setq-default TeX-master nil)
 (add-to-list 'auto-mode-alist '("\\.tex\\'" . LaTeX-mode))
 (add-to-list 'auto-mode-alist '("\\.lat\\'" . LaTeX-mode))
+
+;; Enable cmake-mode for CMake files
+(require 'cmake-mode)
+(add-to-list 'auto-mode-alist '("CMakeLists\\.txt\\'" . cmake-mode))
+(add-to-list 'auto-mode-alist '("\\.cmake\\'" . cmake-mode))
+
+;; Disable 2 space indentations for CMake mode
+(add-hook 'cmake-mode-hook
+          (lambda ()
+            (setq cmake-tab-width 4)
+            (setq indent-tabs-mode nil)   ;; Use spaces instead of tabs
+            (setq tab-width 4)))
+
