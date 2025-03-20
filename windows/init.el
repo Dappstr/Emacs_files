@@ -33,6 +33,20 @@
   (add-hook hook #'tree-sitter-mode)
   (add-hook hook #'tree-sitter-hl-mode))
 
+;; Add rust-analyzer to Eglot's server list
+;;(with-eval-after-load 'eglot
+;;  (add-to-list 'eglot-server-programs '(rust-mode . ("rust-analyzer"))))
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs
+               '(rust-mode . ("rust-analyzer"
+                              :initializationOptions
+                              (:check (:command "clippy"))))))
+
+
+;; Enable Eglot for Rust files
+(add-hook 'rust-mode-hook 'eglot-ensure)
+
+
 ;; Remove explicit Zig grammar setting, relying on tree-sitter-langs instead
 ;; No need to set (setq treesit-language-source-alist '((zig . ("C:/msys64/mingw64/bin/libtree-sitter-zig.dll"))))
 
@@ -71,7 +85,7 @@
  '(org-agenda-files
    '("c:/Users/laneb/Documents/GitHub/MAL_collection/CPP/NOTES.org"))
  '(package-selected-packages
-   '(cmake-mode auctex latex-preview-pane python-mode haskell-mode rust-mode magit company eglot rainbow-delimiters multiple-cursors zig-mode ligature org tree-sitter-langs)))
+   '(cargo-mode cmake-mode auctex latex-preview-pane python-mode haskell-mode rust-mode magit company eglot rainbow-delimiters multiple-cursors zig-mode ligature org tree-sitter-langs)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
