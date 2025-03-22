@@ -81,11 +81,15 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("3e6dc9dfb08b94357a348332644592e59e5292cc877910072ab985680c91edec" default))
+   '("3e6dc9dfb08b94357a348332644592e59e5292cc877910072ab985680c91edec"
+     default))
  '(org-agenda-files
    '("c:/Users/laneb/Documents/GitHub/MAL_collection/CPP/NOTES.org"))
  '(package-selected-packages
-   '(cargo-mode cmake-mode auctex latex-preview-pane python-mode haskell-mode rust-mode magit company eglot rainbow-delimiters multiple-cursors zig-mode ligature org tree-sitter-langs)))
+   '(auctex cargo-mode cmake-mode company eglot haskell-mode
+	    latex-preview-pane ligature magit multiple-cursors
+	    nasm-mode org python-mode rainbow-delimiters rust-mode
+	    tree-sitter-langs zig-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -338,3 +342,6 @@
             (setq indent-tabs-mode nil)   ;; Use spaces instead of tabs
             (setq tab-width 4)))
 
+
+(add-to-list 'auto-mode-alist '("\\.s\\'" . nasm-mode))
+(add-to-list 'auto-mode-alist '("\\.asm\\'" . nasm-mode))
