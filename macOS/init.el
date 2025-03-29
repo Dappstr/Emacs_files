@@ -36,22 +36,6 @@
   "Face for operators in tree-sitter syntax highlighting."
   :group 'tree-sitter-hl-faces)
 
-;;(with-eval-after-load 'tree-sitter
-;;  (custom-set-faces
-;;   '(tree-sitter-hl-face:operator ((t (:foreground "#0aff8d" :inherit nil))))))
-;;(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
-;; '(package-selected-packages '(multiple-cursors tree-sitter-langs tree-sitter)))
-;;(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
-;; '(tree-sitter-hl-face:operator ((t (:foreground "#0aff8d" :inherit nil)))))
-
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -72,8 +56,8 @@
 (use-package multiple-cursors
   :ensure t
   :bind (("C-S-c C-S-c" . mc/edit-lines)
-         ("C->" . mc/mark-next-like-this)
-         ("C-<" . mc/mark-previous-like-this)
+         ("C-S-<down>" . mc/mark-next-like-this)
+         ("C-S-<up>" . mc/mark-previous-like-this)
          ("C-c C-<" . mc/mark-all-like-this)))
 
 ;; Spawn more cursors
@@ -88,9 +72,9 @@
   :config
   (setq rust-format-on-save t))
 
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
+;;(use-package flycheck
+;;  :ensure t
+;;  :init (global-flycheck-mode))
 
 (defun add-cursor-above ()
   (interactive)
@@ -106,22 +90,9 @@
 (use-package d-mode
   :ensure t)
 
-(add-hook 'c-mode-hook #'lsp)
-(add-hook 'c++-mode-hook #'lsp)
-(add-hook 'd-mode #'lsp)
-
-(setq lsp-prefer-flymake nil)  ; Prefer other systems over Flymake
-(use-package lsp-mode
-  :ensure t
-  :commands (lsp lsp-deferred)
-  :hook ((d-mode . lsp-deferred)
-		(c-mode . lsp-deferred)
-         (c++-mode . lsp-deferred)
-		(rust-mode . lsp-deferred))
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  (setq lsp-rust-analyzer-server-command '("rust-analyzer")))  ; Set your desired prefix key here.
-  
+;;(add-hook 'c-mode-hook #'lsp)
+;;(add-hook 'c++-mode-hook #'lsp)
+(add-hook 'd-mode #'lsp)  
   
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -129,30 +100,30 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(zig-mode ligature rainbow-delimiters flycheck company lsp-mode tree-sitter-langs multiple-cursors)))
+   '(python-mode nasm-mode eglot org zig-mode ligature rainbow-delimiters flycheck company lsp-mode tree-sitter-langs multiple-cursors)))
 
-;; Disable flymake for C++
-(with-eval-after-load 'lsp-mode
-  (add-hook 'c++-mode-hook (lambda () (flymake-mode -1)) t))
-(add-hook 'c++-mode-hook 'my-disable-flymake)
 
-;; Disable flycheck for C++
-(add-hook 'c++-mode-hook (lambda () (flycheck-mode -1)))
+;; Eglot
+(require 'eglot)
+(add-to-list 'eglot-server-programs '((c-mode c++-mode) . ("clangd")))
+(add-to-list 'eglot-server-programs '(zig-mode . ("zls")))
 
-(use-package company
-  :ensure t
-  :config
+;; Enable Company Mode globally
+(add-hook 'after-init-hook 'global-company-mode)
+
+;; Configure Company Mode to work well with Eglot
+(with-eval-after-load 'company
   (setq company-minimum-prefix-length 1
-        company-idle-delay 0.0)  ; Adjust as per your preference
-  :hook (after-init . global-company-mode))
+        company-idle-delay 0.0)) ;; Instant completion (adjust if needed)
 
-;;(require 'flymake)
+;; Use Company Mode with Eglot
+(add-hook 'eglot-managed-mode-hook (lambda () (company-mode)))
 
-;; Enable Flymake for all files that support it
-;;(add-hook 'find-file-hook 'flymake-mode-on)
-;;(add-hook 'c++-mode-hook (lambda () (flymake-mode -1)))
-(setq lsp-prefer-flymake nil)  ; Use nil to prefer Flycheck or other systems over Flymake
-(add-hook 'c++-mode-hook (lambda () (flymake-mode -1)) t)  ; 't' adds it to the end of the hook list
+;; Automatically start Eglot for C, C++, and Zig files
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
+(add-hook 'zig-mode-hook 'eglot-ensure)
+
 
 (setq x-select-enable-clipboard t)
 (setq x-select-enable-primary t)
@@ -207,3 +178,9 @@
 (defface font-lock-operator-face
   '((t (:foreground "green")))  ;; Customize the face with your preferred color
   "Face for operators.")
+
+
+(add-to-list 'auto-mode-alist '("\\.s\\'" . nasm-mode))
+(add-to-list 'auto-mode-alist '("\\.asm\\'" . nasm-mode))
+
+(add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
